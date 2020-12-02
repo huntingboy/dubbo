@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.nomad.gmall.service.impl"></context:component-scan>
+
+    <dubbo:application name="order-service-consumer"></dubbo:application>
+
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"></dubbo:registry>
+
+    <!--服务消费者缺省值配置，所以服务都不检查，优先级最低-->
+    <!--优先级:精确匹配优先(method标签接口属性>reference标签属性>consumer标签属性); 相同级别，provider<consumer-->
+    <!--check:启动时检查提供者是否存在，true报错，false忽略-->
+    <!--timeout:远程服务调用超时时间(毫秒), 默认1s-->
+    <!--retries:远程服务调用重试次数，不包括第一次调用，不需要重试请设为0,仅在cluster为failback/failover(容错性策略：故障恢复/故障转移)时有效(幂等服务,查，改，删)-->
+    <dubbo:consumer check="false" timeout="3000" retries="4"></dubbo:consumer>
+
+    <!--用于创建一个远程服务代理，一个引用可以指向多个注册中心-->
+    <!--version:*表示随机调用-->
+    <dubbo:reference interface="com.nomad.gmall.service.UserService" id="userService" check="false" timeout="2500" retries="3" version="*" stub="com.nomad.gmall.service.impl.UserServiceStub">
+        <dubbo:method name="getUserAddressList" timeout="2000" retries="2"></dubbo:method>
+    </dubbo:reference>
+
+    <!--先通过注册中心得道monitor地址，然后直连monitor-->
+    <!--<dubbo:monitor protocol="registry"></dubbo:monitor>-->
+    <!--直连monitor方式-->
+    <!--<dubbo:monitor address="127.0.0.1:20880"></dubbo:monitor>-->
+</beans>

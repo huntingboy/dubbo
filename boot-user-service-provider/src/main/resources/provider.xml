@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+
+    <!--指定当前服务/应用的名字，不同的服务不同的名子-->
+    <dubbo:application name="user-service-provider"></dubbo:application>
+
+    <!--用于配置连接注册中心地址-->
+    <dubbo:registry protocol="zookeeper" address="zookeeper://127.0.0.1:2181"></dubbo:registry>
+
+    <!--服务提供者缺省值配置, 应用于所有provider, 同时该标签为 <dubbo:service> 和 <dubbo:protocol> 标签的缺省值设置-->
+    <!--timeout:远程服务调用超时时间(毫秒), 默认1s-->
+    <!--retries:远程服务调用重试次数，不包括第一次调用，不需要重试请设为0,仅在cluster为failback/failover(容错性策略：故障恢复/故障转移)时有效(幂等服务,查，改，删)-->
+    <dubbo:provider timeout="4000" retries="4"></dubbo:provider>
+
+    <!--用于配置提供服务的协议信息，协议由提供方指定，消费方被动接受-->
+    <dubbo:protocol name="dubbo" port="20880"></dubbo:protocol>
+
+    <!--用于暴露一个服务，定义服务的元信息，一个服务可以用多个协议暴露，一个服务也可以注册到多个注册中心-->
+    <!--version:服务版本，通常用于灰度发布，即让一部分人先使用新版本测试-->
+    <dubbo:service interface="com.nomad.gmall.service.UserService" ref="userServiceImpl" timeout="3500" retries="3" version="2.0.0">
+        <dubbo:method name="getUserAddressList" timeout="3200" retries="2"></dubbo:method>
+    </dubbo:service>
+    <dubbo:service interface="com.nomad.gmall.service.UserService" ref="userServiceImpl02" timeout="3500" retries="3" version="1.0.0">
+        <!--用于暴露一个服务的某一个方法,控制到方法级-->
+        <dubbo:method name="getUserAddressList" timeout="3200" retries="2"></dubbo:method>
+    </dubbo:service>
+
+    <!--服务的实现-->
+    <bean id="userServiceImpl" class="com.nomad.gmall.service.impl.UserServiceImpl"></bean>
+    <!--服务的实现-->
+    <bean id="userServiceImpl02" class="com.nomad.gmall.service.impl.UserServiceImpl"></bean>
+
+    <!--先通过注册中心得道monitor地址，然后直连monitor-->
+    <!--<dubbo:monitor protocol="registry"></dubbo:monitor>-->
+    <!--直连monitor方式-->
+    <!--<dubbo:monitor address="127.0.0.1:20880"></dubbo:monitor>-->
+</beans>
