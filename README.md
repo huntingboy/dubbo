@@ -35,16 +35,17 @@
 
    - 设计图解
 
-     - 整体设计
+     - 整体设计  
        <img src="pic/dubbo-framework.jpg" style="zoom: 80%;" />
-     - 模块分包
+     - 模块分包  
        <img src="pic/dubbo-modules.jpg" style="zoom:80%;" />
-     - 依赖关系<img src="/home/gao/.config/Typora/typora-user-images/image-20201202143811805.png" style="zoom:80%;" />
+     - 依赖关系  
+       <img src="pic/dubbo-relation.jpg" style="zoom:80%;" />
      - 标签解析(DubboBeanDefinitionParser类, XxxConfig类)
-     - 调用链
+     - 调用链  
        <img src="pic/dubbo-extension.jpg" style="zoom:80%;" />
-     - 暴露服务时序
+     - 暴露服务时序  
        <img src="pic/dubbo-export.jpg" style="zoom:80%;" />
-     - 引用服务时序
+     - 引用服务时序  
        <img src="pic/dubbo-refer.jpg" style="zoom:80%;" />
 
